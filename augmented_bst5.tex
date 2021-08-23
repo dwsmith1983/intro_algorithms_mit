@@ -1,0 +1,14 @@
+\documentclass[margin=3mm]{standalone}
+\usepackage[edges]{forest}
+
+\begin{document}
+    \begin{forest}
+for tree={
+    grow=south,
+    circle, draw, minimum size=3ex, inner sep=1pt,
+    s sep=7mm
+        }
+[49$^6$ [46$^2$ [43$^1$] ] 
+      [79$^3$ [64$^1$] [83$^1$] ]] 
+\end{forest}
+\end{document}

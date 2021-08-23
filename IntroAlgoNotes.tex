@@ -1,0 +1,36 @@
+\documentclass[dvipsnames,svgnames,x11names]{scrbook}%
+\usepackage{mit}
+% Allows display math in unbreakable environments to break
+\allowdisplaybreaks
+%
+\thispagestyle{empty}%
+\pagestyle{plain}%
+%
+\begin{document}%
+\pagecolor{gray!50}
+\begin{center}
+  \begin{center}
+  \vspace*{\fill}
+  \textsc{\LARGE Introduction to Algorithms MIT 6.006}
+  \par\bigskip
+  \textsc{By:}
+  \par\bigskip
+  \textsc{\LARGE Dustin Smith}
+  \vspace*{\fill}
+\end{center}
+\end{center}
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+% use input to add chapters
+\input{lecture1}
+\input{lecture2}
+\input{lecture3}
+\input{lecture4}
+\input{lecture5}
+
+\end{document}

@@ -1,0 +1,85 @@
+\chapter{Lecture: Algorithmic Thinking, Peak Finding}
+\href{https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-006-introduction-to-algorithms-fall-2011/lecture-videos/lecture-1-algorithmic-thinking-peak-finding/}{Lecture 1} from the MIT's 
+Intro to Algorithms.
+
+Peak finding runs on in a one-dimensional array. Let the array be length of \(9\) indexed
+from \(1\) to \(9\). 
+\begin{table}[H]
+	\centering
+	\begin{tabular}{| *{9}{|c|} |}
+  		\hline			
+  		\(a\) & \(b\) & \(c\) & \(d\) & \(e\) & \(f\) & \(g\) & \(h\) & \(i\)\\
+  		\hline  
+	\end{tabular}
+	\caption{1D array peak finding.}
+	\label{tab1:dpeak}
+\end{table}
+\begin{definition}
+	A position, \(b\), is a peak if and only if position \(b\geq a\) and \(b\geq c\).
+\end{definition}
+\noindent
+Find a peak if it exists. Straightforward algorithm going from left to right. In the worst case, 
+the complexity would be \(\theta(n)\). 
+\begin{definition}
+	Divide and Conquer (Binary Search); look at \(n / 2\) position, if \(a[n/2] < a[n / 2 - 1]\), then only look 
+	at the left half indices from \(1,\ldots, n / 2 -1\) to look for a peak and vice versa. Otherwise, \(n / 2\)
+	position is a peak.
+\end{definition}
+\noindent
+What is the complexity of this divide and conquer algorithm?
+\[
+	T(n) = T(n / 2) + \theta(1)
+\]
+where \(T(n)\) is the work done by the algorithm of size \(n\). Let's list out some of \(T(n / 2)\).
+\begin{align*}
+	\begin{aligned}
+		n / 2, n / 4, n / 8, n / 16, \ldots & \rightarrow & n / 2^k & \leq & 1\\
+		& & n & \leq & 2^k\\
+		& & \log_2 n & \leq & k
+	\end{aligned}
+\end{align*}
+Therefore, the time complexity \(T(n) = \theta(\log_2 n) + \theta(1) \rightarrow \theta(\log_2 n)\).
+Now, let's consider the 2D-peak. 
+\begin{table}[H]
+	\centering
+	\begin{tabular}{| *{5}{|c|} |}
+		\hline
+		   & c & & & \\
+		\hline
+		b & a & d & & \\
+		\hline
+		   & e & & & \\
+		\hline
+		   & & & & \\
+		\hline
+	\end{tabular}
+	\caption{2D matrix peak finding.}
+	\label{tab1:dpeak2d}
+\end{table}
+\begin{definition}
+	\(a\) is a 2D-peak if and only if \(a\geq b\), \(a\geq d\), \(a\geq c\), and \(a\geq e\).
+\end{definition}
+\noindent
+For this case, we want to use the Greedy Ascent algorithm. With Greedy Ascent, we must make a
+choice where to start and where to go first: left or right or up or down. In the worst case, we have
+\(\theta(n\cdot m)\) complexity, and when \(n = m\), \(\theta(n^2)\). We can apply divide and conquer
+for a 2D peak as follows:
+\begin{enumerate}
+	\item Pick a column \(j\) to run binary search on the rows, and at row \((i, j)\), we have a 1D peak.
+	\item Next check \((i \pm 1, j)\) against \((i, j)\).
+	\item If \((i , j)\geq (i \pm 1, j)\), then we are done we have a 2D peak.
+	\item Otherwise, move left/right to find the new peak and then check \((i + 1, j \pm 1)\) and so on.
+\end{enumerate}
+When we have a single column, find the global maximum and done. Overall, we have
+\begin{align*}
+	\begin{aligned}
+		T(n ,m) & = T(n , m / 2) + \theta_{\text{global max}}(n)\\
+		T(n , 1) & = \theta(n) & & & \text{Base case}\\
+		T(n, m) & = \underbrace{\theta(m)\cdots\theta(m)}_{\text{n times}}\\
+					& = m^n / 2^k & \leq & 1\\
+					& = m^n & \leq & 2^k\\
+					& = n\log_2 m & \leq & 1\\
+					& = \theta(n\log_2 m)
+	\end{aligned}
+\end{align*}
+where this follows from the 1D time complexity.

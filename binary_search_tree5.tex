@@ -1,0 +1,14 @@
+\documentclass[margin=3mm]{standalone}
+\usepackage[edges]{forest}
+
+\begin{document}
+    \begin{forest}
+for tree={
+    grow=south,
+    circle, draw, minimum size=3ex, inner sep=1pt,
+    s sep=7mm
+        }
+[30 [17 [14] [20] ] 
+      [40] ] 
+\end{forest}
+\end{document}

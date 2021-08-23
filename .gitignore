@@ -1,0 +1,11 @@
+# tex
+*.aux
+*.toc
+*.pdf
+*.synctex
+*.gz
+*.log
+*.fdb_latexmk
+
+# Mac
+.DS_Store

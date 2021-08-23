@@ -1,0 +1,95 @@
+\chapter{Lecture: Binary Sort, Insert Sort, Merge Sort}
+\href{https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-006-introduction-to-algorithms-fall-2011/lecture-videos/lecture-3-insertion-sort-merge-sort/}{Lecture 3} from the MIT's 
+Intro to Algorithms.
+
+Why sorting? Easy to search like phone books, mp4 organizations, etc. Problems can become easy
+once items are sorted, example, finding a median.
+\begin{python}
+def binary_search_recursive(array, element, start, end):
+    if start > end:
+        return -1
+
+    mid = (start + end) // 2
+    if element == array[mid]:
+        return mid
+
+    if element < array[mid]:
+        return binary_search_recursive(array, element, start, mid - 1)
+    else:
+        return binary_search_recursive(array, element, mid + 1, end)
+        
+def binary_search_iterative(array, element):
+    mid = 0
+    start = 0
+    end = len(array)
+
+    while (start <= end):
+        mid = (start + end) // 2
+
+        if element == array[mid]:
+            return mid
+
+        if element < array[mid]:
+            end = mid - 1
+        else:
+            start = mid + 1
+    return -1
+    
+def insertion_sort(array):
+    # We start from 1 since the first element is trivially sorted
+    for index in range(1, len(array)):
+        currentValue = array[index]
+        currentPosition = index
+
+        while (currentPosition > 0 and 
+            array[currentPosition - 1] > currentValue):
+            array[currentPosition] = array[currentPosition -1]
+            currentPosition = currentPosition - 1
+
+        array[currentPosition] = currentValue
+\end{python}
+Data compression benefits from sorting. Insertion sort, works by doing pair-wise swaps. What is the time
+complexity? We have \(\theta(n)\) steps but each step could do \(\theta(n)\) work (swaps and compares)
+ so \(\theta(n^2)\). 
+ 
+ Let's consider Merge Sort, another divide and conquer algorithm. Split array into left and right halves.
+ Then we merge and sort array. However, with merge sort, we need \(\theta(n)\) auxiliary space whereas
+ with insertion sort, we need \(\theta(1)\) auxiliary space.
+ \begin{python}
+ def merge_sort(list):
+    list_length = len(list)
+
+    if list_length == 1:
+        return list
+
+    mid_point = list_length // 2
+
+    left_partition = merge_sort(list[:mid_point])
+    right_partition = merge_sort(list[mid_point:])
+
+    return merge(left_partition, right_partition)
+
+def merge(left, right):
+    output = []
+    i = j = 0
+
+    while i < len(left) and j < len(right):
+        if left[i] < right[j]:
+            output.append(left[i])
+            i += 1
+        else:
+            output.append(right[j])
+            j += 1
+
+    output.extend(left[i:])
+    output.extend(right[j:])
+
+    return output
+ \end{python}
+
+
+
+
+
+
+

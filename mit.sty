@@ -1,0 +1,144 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{mit}
+\usepackage{fixltx2e}%  http://ctan.org/pkg/fixltx2e
+
+\usepackage[utf8]{inputenx}%  http://ctan.org/pkg/inputenx
+% Euler for math | Palatino for rm | Helvetica for ss | Courier for tt
+\renewcommand{\rmdefault}{ppl}% rm
+\linespread{1.025}% Palatino needs more leading
+%\usepackage[scaled]{helvet}% ss //  http://ctan.org/pkg/helvet
+%\usepackage{courier}% tt // http://ctan.org/pkg/courier
+\usepackage[sc,osf]{mathpazo}
+\usepackage[euler-digits,small]{eulervm}  %  http://ctan.org/pkg/eulervm
+% a better implementation of the euler package (not in gwTeX)
+\normalfont%
+\usepackage[T1]{fontenc}%  http://ctan.org/pkg/fontenc
+\usepackage{textcomp}%  http://ctan.org/pkg/textcomp
+%
+\usepackage{mathtools}%  http://ctan.org/pkg/mathtools
+\usepackage{graphicx}%
+\usepackage{xcolor}%  http://ctan.org/pkg/xcolor
+\usepackage{amssymb}%  http://ctan.org/pkg/amssymb
+\usepackage{float}%  http://ctan.org/pkg/float
+\usepackage{listings}
+\usepackage[most]{tcolorbox}%
+\tcbuselibrary{theorems}%
+\usepackage{standalone}%
+\usepackage{enumitem}%  http://ctan.org/pkg/enumitem
+%\usepackage{graphicx}%  http://ctan.org/pkg/graphicx
+%\usepackage{listings}%  http://ctan.org/pkg/listings
+\usepackage[stretch = 10, verbose = silent, protrusion = 0]{microtype}%
+%  http://ctan.org/pkg/microtype
+\usepackage{subcaption}%  http://ctan.org/pkg/subcaption
+\captionsetup[subfigure]{labelformat = parens, labelsep = space, font = small}
+%%  
+\usepackage[pdfencoding = auto, psdextra, bookmarksdepth = 4]{hyperref}%
+% http://ctan.org/pkg/hypperref
+\usepackage[margin = 0.5in]{geometry}%  http://ctan.org/pkg/geometry
+\usepackage[noabbrev]{cleveref}%  http://ctan.org/pkg/cleveref
+%  adding examples to cleverref
+\usepackage[all]{hypcap}%  http://ctan.org/pkg/hypcap
+%
+%
+%  suppressing badness warnings that aren't to severe
+\vbadness = 2000
+\hbadness = 2000
+%
+%  hyperref settings
+\newcommand\myshade{100}
+\colorlet{mylinkcolor}{violet}
+\colorlet{mycitecolor}{YellowOrange}
+\colorlet{myurlcolor}{BurntOrange}
+
+\hypersetup{
+  linkcolor  = mylinkcolor!\myshade!black,
+  citecolor  = mycitecolor!\myshade!black,
+  urlcolor   = myurlcolor!\myshade!black,
+  colorlinks = true,
+}
+%%%%% 
+
+% Allows equation taggin in any math enviroment
+
+\newcommand{\eqnumtag}{%
+  % step the counter and make it lable-able
+  \refstepcounter{exercise}%
+  % print the counter as tag
+  \tag{\theequation}%
+}
+%
+% Rename enumerate from item to exercise
+\newlist{exercise}{enumerate}{75}
+\setlist[exercise]{label*=\arabic*.}
+% adjust cref for label names
+\crefname{exercisei}{exercise}{exercise}
+\Crefname{exercisei}{Exercise}{exercise}
+\crefname{exerciseii}{exercise}{exercise}
+\Crefname{exerciseii}{Exercise}{exercise}
+
+%%%%%
+% Enivornments
+% Definition set up
+\newtcolorbox{definition}{
+freelance,
+breakable,
+before=\par\vspace{2\bigskipamount}\noindent,
+after=\par\bigskip,
+frame code={
+  \node[
+  anchor=south west,
+  inner xsep=8pt,
+  xshift=8pt,
+  rounded corners=5pt,
+  font=\bfseries\color{white},
+  fill=gray] at (frame.north west) (tit) {\strut Definition:};
+  \draw[
+  line width=3pt,
+  rounded corners=5pt,gray
+  ] (tit.west) -| (frame.south west) -- ([xshift=15pt]frame.south west);
+},
+interior code={},
+top=2pt
+}
+% 
+
+
+%% python
+\DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{12} % for bold
+\DeclareFixedFont{\ttm}{T1}{txtt}{m}{n}{12}  % for normal
+
+\definecolor{deepblue}{rgb}{0,0,0.5}
+\definecolor{deepred}{rgb}{0.6,0,0}
+\definecolor{deepgreen}{rgb}{0,0.5,0}
+
+% Python style for highlighting
+\newcommand\pythonstyle{\lstset{
+language=Python,
+basicstyle=\ttm,
+morekeywords={self},              % Add keywords here
+keywordstyle=\ttb\color{deepblue},
+emph={MyClass,__init__},          % Custom highlighting
+emphstyle=\ttb\color{deepred},    % Custom highlighting style
+stringstyle=\color{deepgreen},
+frame=tb,                         % Any extra options here
+showstringspaces=false
+}}
+
+
+% Python environment
+\lstnewenvironment{python}[1][]
+{
+\pythonstyle
+\lstset{#1}
+}
+{}
+
+% Python for external files
+\newcommand\pythonexternal[2][]{{
+\pythonstyle
+\lstinputlisting[#1]{#2}}}
+
+% Python for inline
+\newcommand\pythoninline[1]{{\pythonstyle\lstinline!#1!}}
+
+

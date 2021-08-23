@@ -1,0 +1,35 @@
+\chapter{Lecture: Models of Computation, Document Distance}
+\href{https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-006-introduction-to-algorithms-fall-2011/lecture-videos/lecture-2-models-of-computation-document-distance/}{Lecture 2} from the MIT's 
+Intro to Algorithms.
+
+What is an algorithm? It is a way to define computational procedure for solving some problem. An
+algorithm takes an input and returns some output. 
+\begin{enumerate}
+	\item Random Access Machine (RAM) in constant time can load, do computations, and store
+	in constant time by memory address.
+\end{enumerate}
+In Python, sort is \(\theta(n\log n)\) and list length is constant time since Python stores the length 
+pre-computed. Dictionary look up in Python takes constant time, \(\theta(1)\). List append is constant 
+time as well.
+\begin{definition}
+	Document distance problem: given two documents \(D_1\) and \(D_2\), I want to compute the 
+	distance between.
+\end{definition}
+\noindent
+A document is a sequence of words and word is a string of characters. How can we do document 
+distance? In this example, we can look at shared words. Consider two documents, \(D_1 =\) "the cat" 
+and \(D_2 =\) "the dog". What are some ways we could measure distance?
+\begin{align*}
+	\begin{aligned}
+		d'(D_1, D_2) & = D_1\cdot D_2\\
+		 & = \sum_wD_1[w]\cdot D_2[w]\\
+		 d''(D_1, D_2) & = \frac{D_1\cdot D_2}{\lvert D_1\rvert\lvert D_2\rvert}\\
+		 d(D_1, D_2) & = \arccos(d'') 
+	\end{aligned}
+\end{align*}
+Algorithm
+\begin{enumerate}
+	\item Split document into words
+	\item Compute word frequencies
+	\item Compute dot product
+\end{enumerate}
