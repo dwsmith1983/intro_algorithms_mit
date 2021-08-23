@@ -6,6 +6,7 @@
 *.gz
 *.log
 *.fdb_latexmk
+*.fls
 
 # Mac
 .DS_Store
