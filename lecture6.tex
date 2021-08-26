@@ -1,0 +1,59 @@
+\chapter{Lecture: AVL Trees, AVL Sort}
+\href{https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-006-introduction-to-algorithms-fall-2011/lecture-videos/lecture-6-avl-trees-avl-sort/}{Lecture 6} from the MIT's 
+Intro to Algorithms.
+
+Balanced BST (picking up from lecture 5). We use in order traversal to get the sorted order of a BST.
+A perfectly balanced BST would have height roughly \(\theta(log_2 n)\). 
+\begin{definition}
+	The height of a BST is the length of the longest path from the root the the leaf. We call a tree balanced 
+	if the height is order \(\theta(\log_2 n)\).
+\end{definition}
+\begin{definition}
+	The height of a node in a tree is the longest path from that node to the leaf.
+\end{definition}
+\noindent
+All leafs have height \(0\). The max of the height of the left child with the height of the right child plus
+one is the height of the parent.
+
+AVL trees require height of left and right children of \textit{every} node to differ by at most \(\pm 1\). Let
+\(h_l\) and \(h_r\) be the heights of the left and right subtrees, respectively. Then we want 
+\(\lvert h_l - h_r\rvert\leq 1\). Less than or equal to zero is almost impossible to maintain but \(1\) is
+more reasonable. We claims that AVL trees are balanced; worst case is when right (or left) subtree has 
+height \(1\) more than the left for every node. Let \(N_h = \min\) number of nodes in the an AVL tree of 
+height \(h\). The base case is \(N_{\theta(1)} = \theta(1)\). We have that \(N_h = 1 + N_{h - 1} + N_{h - 2}\). 
+Let \(\varphi \approx 1.618033\) be the golden ratio. Then
+\[
+	N_h > F_h = 
+	\begin{cases}
+		\Big\lfloor\dfrac{\varphi^h}{\sqrt{5}}\Big\rfloor, & \text{if the decimal portion is } \leq 0.5\\
+		\Big\lceil\dfrac{\varphi^h}{\sqrt{5}}\Big\rceil, & \text{otherwise}
+	\end{cases}
+\]
+where \(F_h\) is the \(h\)-th Fibonacci number. Now we have that
+\begin{align*}
+	\varphi^h / \sqrt{5} & < n\\
+	h\cdot\log_{\varphi} 1 / \sqrt{5} & < \log_{\varphi} n \\
+	h\cdot c & < 1.44\log_2 n
+\end{align*}
+where \(c = \log_{\varphi} 1 / \sqrt{5}\) is a small constant. Another approach would be to
+\begin{align*}
+	N_h & = 1 + N_{h - 1} + N_{h - 2}\\
+	& > 1 + 2\cdot N_{h - 2}\\
+	& > 2\cdot N_{h - 2}\\
+	& = \theta(2^{h / 2})
+\end{align*}
+Therefore, \(h < 2\cdot \log_2 n\). AVL insert
+\begin{enumerate}
+	\item simple BST insert
+	\item fix AVL property with BST rotation from the changed node up
+\end{enumerate}
+What can we do with AVL sort?
+\begin{enumerate}[label=$\ast$]
+	\item Insert \(n\) items \(\theta(n \log_2 n)\)
+	\item in order traversal take \(\theta(n)\)
+\end{enumerate}
+With abstract data types, we should support insert, delete, find min or max, and successor or 
+predecessor.
+
+
+
