@@ -275,8 +275,83 @@ def how_sum_memo(
   memo[target] = None
   return None
 \end{python}
-Same as with other functions, we will have a combination of \(m\cdot n\) but this time we also have to
-iterate through an array 
+Same as with other functions, we will have a combination of \(m\cdot n\) but similar to last time we might
+have to create an array of size \(m\). Our time complexity is \(\theta (m^2\cdot n)\). However, unlike the 
+brute force method where we only need to track the array, we must also track the dictionary so our
+space complexity is \(\theta (m\cdot m) = \theta (m^2)\).
+\par\medskip
+In this iteration, we want to find the best sum. We will define the best sum as the array that consists of
+the elements that sum to the target with the least elements. Again, let's consider a target of \(7\) and an
+array of \([5, 4, 3, 7]\). From \cref{fig:how_sum}, this time we need to keep track of all the solutions in
+order to select the array with the least elements. If there is more than one answer, just return one.
+\begin{python}
+def best_sum(target, arr: List[int]) -> List[int]:
+  if target == 0:
+      return []
+  if target < 0:
+      return None
+    
+  shortest = None
+    
+  for i in arr:
+      remain = target - i
+      res = best_sum(remain, arr)
+        
+      if res is not None:
+          res.append(i)
+          if shortest is None or len(shortest) > len(res):
+              shortest = res
+                
+  return shortest
+\end{python}
+We will have the same time complexity as how\_sum here, \(\theta(n^m\cdot m)\). For the space, we will
+have a stack space of \(m\) and an array max space of \(m\), \(\theta (m^2)\).
+\par\medskip
+Now, let's construct the memoized version of best\_sum.
+\begin{python}
+def best_sum_memo(
+    target, 
+    arr: List[int], 
+    memo: Dict[int, List[int]]=None
+    ) -> List[int]:
+  if memo is None:
+      memo = {}
+  if target in memo:
+      return memo[target]
+    
+  if target == 0:
+      return []
+  if target < 0:
+      return None
+    
+  shortest = None
+    
+  for i in arr:
+      remain = target - i
+      res = best_sum_memo(remain, arr, memo)
+        
+      if res is not None:
+          # copy the array due to python issues with immutability
+          new_arr = res.copy()
+          new_arr.append(i)
+          if shortest is None or len(shortest) > len(new_arr):
+              shortest = new_arr
+                
+  memo[target] = shortest   
+  return shortest
+\end{python}
+We will have the same time and space complexity as how\_sum\_memo. That is, our complexities our
+\(\theta (m^2\cdot n)\) for time and \(\theta (m^2)\) for space.
+\par\medskip
+In the last three problems can\_sum, how\_sum, and best\_sum, we solved
+\begin{enumerate}
+	\item a decision problem with can\_sum,
+	\item a combinatoric problem how\_sum, and
+	\item an optimization problem with best\_sum.
+\end{enumerate}
+Next, we will look at dynamic program problems in the scope of string inputs.
+\par\medskip
+
 \end{document}
 
 
