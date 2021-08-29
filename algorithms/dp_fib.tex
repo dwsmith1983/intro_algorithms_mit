@@ -15,7 +15,12 @@
 \begin{document}
 \begin{tikzpicture}[
   every node/.style = {minimum width = 1em, draw, circle},
-  level/.style = {sibling distance = 80mm/#1}
+  level/.style = {sibling distance = 80mm/#1},
+  level 1/.style = {sibling distance = 70mm},
+  level 2/.style = {sibling distance = 40mm},
+  level 3/.style = {sibling distance = 20mm},
+  level 4/.style = {sibling distance = 10mm},
+  level 5/.style = {sibling distance = 10mm},
   ]
   \node {7}
   child {node {6} 

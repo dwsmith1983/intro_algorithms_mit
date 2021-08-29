@@ -148,8 +148,137 @@ What does this mean? We need to visualize it as a tree, implement the tree using
 leaves are our base cases, and test it. Once we do this, we can move onto adding a memo, add the
 base cases to return memo values, and store return values in the memo.
 \par\medskip
-
+Next, we write a function to determine if we can make the desired the sum given a target value and
+an array of integers which we can reuse. We will return a boolean if we can or cannot make the desired 
+target value. We can assume \(\forall x\in\text{ array } x\geq 0\). Consider the following inputs of a target 
+value of \(7\) and an array of \([5, 4, 3, 7]\). Let's first visualize our problem using a tree.
+\begin{figure}[h]
+	\centering
+	\includegraphics[height = 2in]{can_sum.pdf}
+	\caption{The tree for a target of \(7\) and an array of \([5, 4, 3, 7]\). The tree is pruned of any leaves
+	that would be less than \(0\).}
+	\label{fig:can_sum}
+\end{figure}
+By now, it should be clear what the height and number of children per parent node would be. In this
+brute force implementation, let \(m\) be the height of the tree which corresponds to the target and \(n\)
+be number of children, we have that the time complexity is \(\theta (n^m)\). The stack space for this 
+algorithm would be \(m\) as well so the space complexity is \(\theta (m)\). What would be our base 
+case(s)? If we get a node of zero, we are able to construct the sum, and if our number goes negative,
+we are not.
+\begin{python}
+def can_sum(target: int, arr: List[int]) -> bool:
+  if target == 0:
+    return True
+  if target < 0:
+    return False
+    
+  for num in arr:
+    remain = target - num
+    if can_sum(remain, arr):
+      return True
+      
+  return False
+\end{python}
+\par\medskip
+Now we will construct the memoization algorithm for can sum.
+\begin{python}
+def can_sum_memo(
+    target: int, 
+    arr: List[int], 
+    memo: Dict[int, bool]=None
+    ) -> bool:
+  if memo is None:
+    memo = {}
+  if target in memo:
+    return memo[target]
+    
+  if target == 0:
+    return True
+  if target < 0:
+    return False
+    
+  for num in arr:
+    remain = target - num
+    if can_sum_memo(remain, arr, memo):
+      memo[target] = True
+      return True
+      
+  memo[target] = False
+  return False
+\end{python}
+For the memoized function, what is our time and space complexity? For the space complexity, our
+stack will consist of \(m\), the height of tree (target), so \(\theta (m)\) is our space complexity. The number
+of combinations we have now are \(m\) by \(n\) so we will have \(\theta (m\cdot n)\) time.
+\par\medskip
+The next question is now how can we make the target sum. In this example, given a target and an array
+of integers, how can we make the target sum from array with replacement. If we cannot make the sum,
+we just return null, and the array of values otherwise. If the target is \(0\), we just need to return an
+empty array \([]\). Let's consider the same example of a target value of \(7\) and an array of 
+\([5, 4, 3, 7]\).
+\begin{figure}[h]
+	\centering
+	\includegraphics[height=2.5in]{how_sum.pdf}
+	\caption{The binary tree with array updates.}
+	\label{fig:how_sum}
+\end{figure}
+If we reach zero, we know we can create the sum. As we move up the stack with out empty array, we 
+need to push the difference between the node values into the array. When we reach the root, we will
+have our arrays of values on how to sum. However, for this problem, we just need to return a single 
+solution. We don't need to keep track of all the solutions.
+\begin{python}
+def how_sum(target: int, arr: List[int]) -> List[int]:
+  if target == 0:
+    return []
+  if target < 0:
+    return None
+    
+  for num in arr:
+    remain = target - num
+    result = how_sum(remain, arr)
+    if res is not None:
+      return result + [num]
+      
+  return None
+\end{python}
+What would be our time and space complexity here? Similarly, we would have \(n^m\) steps where 
+\(n\) is the length of the array and \(m\) is the height or the target. However, now we have to update an
+array that could potentially be of size \(m\), an array of \(m\) ones. Therefore, our time complexity is
+\(\theta(n^m\cdot m)\). For space, we have the same potential of an array of size \(m\) so our space
+complexity is \(\theta(m)\).
+\par\medskip
+As we have done before, we will now memoize the how sum function.
+\begin{python}
+def how_sum_memo(
+    target: int, 
+    arr: List[int], 
+    memo: Dict[int, List[int]]=None
+    ) -> List[int]:
+  if memo is None:
+    memo = {}
+  if target in memo:
+    return memo[target]
+    
+  if target == 0:
+    return []
+  if target < 0:
+    return None
+    
+  for num in arr:
+    remain = target - num
+    result = how_sum_memo(remain, arr, memo)
+    if res is not None:
+      new_arr = result.copy()
+      new_arr.append(num)
+      memo[target] = new_arr
+      return new_arr
+      
+  memo[target] = None
+  return None
+\end{python}
+Same as with other functions, we will have a combination of \(m\cdot n\) but this time we also have to
+iterate through an array 
 \end{document}
+
 
 
 
