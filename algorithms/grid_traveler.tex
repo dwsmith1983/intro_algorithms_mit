@@ -15,7 +15,8 @@
 \begin{document}
 \begin{tikzpicture}[
   every node/.style = {minimum width = 2.5em, draw, circle},
-  level/.style = {sibling distance = 75mm/#1}
+  level/.style = {sibling distance = 75mm/#1},
+  level 3/.style = {sibling distance = 20mm},
   ]
   \node[label=\(+3\)] {\((2, 3)\)}
   child {node[label=\(+1\)] {\((1, 3)\)} 
