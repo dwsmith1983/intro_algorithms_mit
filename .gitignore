@@ -1,7 +1,6 @@
 # tex
 *.aux
 *.toc
-*.pdf
 *.synctex
 *.gz
 *.log
