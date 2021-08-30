@@ -496,6 +496,121 @@ def all_construct_memo(
   memo[s] = result
   return result
 \end{python}
+The time and space complexity for our brute force algorithm is \(\theta(m^n\cdot n)\) and \(\theta(n^2)\).
+As for the memoization, we have \(\theta(n^2\cdot m)\) and \(\theta(n^2)\).
+\par\medskip
+In the previous examples, we looked at the dynamic programming technic of memoization. However,
+this isn't the only way we can do dynamic programming. In the following examples, we will use the 
+tabulation method. Again, let's start with our Fibonacci series. With the tabulation method, we will need
+to setup up an array. Let's consider \(fib(6)\). Therefore, we will need an array of length ending at \(6\)
+but indexed at \(0\) so length \(7\). Our base cases are \(0, 1\) for \(n = 1, 2\), respectively. With
+tabulation, we will use three pointers. Two for the indices we are summing in the array and the third to
+store the new value.
+\begin{table}[h]
+	\centering
+	\begin{tabular}{| *{7}{|c|} |}
+  		\hline			
+  		\(0\) & \(1\) & \(0\) & \(0\) & \(0\) & \(0\) & \(0\) \\
+  		\hline  
+	\end{tabular}
+	\caption{For tabulation, we set up an \(n + 1\) length array initialized at zero and with our base cases.}
+	\label{tab:fib_tab}
+\end{table}
+How do we go about solving this problem? Conceptually, what we do is we start our two pointers on our
+base indices \(0\) and \(1\) with the third pointer on \(2\). We sum our two pointers and update index \(2\).
+Afterwards, we slide our pointer over one unit and repeat.
+\begin{table}[h]
+	\centering
+	\begin{tabular}{| *{7}{|c|} |}
+  		\hline			
+  		\(0\) & \(1\) & \(1\) & \(2\) & \(3\) & \(5\) & \(8\) \\
+  		\hline  
+	\end{tabular}
+	\caption{After sliding our pointers and summing, in \cref{tab:fib_tab}, we get the following array.}
+	\label{tab:fib_tab_complete}
+\end{table}
+Since we are iterating through an array of size \(n\), our space and time complexity are both 
+\(\theta(n)\).
+\begin{python}
+def fib_tab(n: int) -> int:
+  table = [0 for i in range(n + 1)]
+  table[1] = 1
+    
+  for i in range(n):
+    if i + 1 < n and i + 2 <= n:
+      table[i + 1] += table[i]
+      table[i + 2] += table[i]
+    if i + 1 <= n and i + 2 > n:
+      table[i + 1] += table[i]  
+  return table[n]
+\end{python}
+\par\medskip
+Next, let's go back to our grid traveler problem. In this case, we will need an 2D array of size 
+\(m\times n\). That is, both our space and time complexity will be \(\theta(m\cdot n)\).
+\begin{python}
+def grid_traveler_tab(m: int, n: int) -> int:
+  table = [[0] * (n + 1) for i in range(m + 1)]
+  # starting position 1, 1 due to padding
+  # the top row and left column is padded with zeros
+  table[1][1] = 1
+    
+  for i in range(m + 1):
+    for j in range(n + 1):
+      current = table[i][j]
+      if i + 1 <= m:
+        table[i + 1][j] += current
+      if j + 1 <= n:
+        table[i][j + 1] += current
+                
+  table[m][n] = table[m - 1][n] + table[m][n - 1]    
+  return table[m][n]
+\end{python}
+\par\medskip
+Let's now look at the rules for tabulation.
+\begin{enumerate}
+	\item Visualize it as a table.
+	\item Size the table based on the inputs.
+	\item Initialize the table with default values like \(0\) or False, for example.
+	\item Seed the the base cases; where we automatically know the answer.
+	\item Iterate through the table.
+	\item Fill further positions based on current position.
+\end{enumerate}
+Lastly, we will look at the can\_sum problem before and leave the rest for the reader to tabulate. Given
+a target value of \(7\) and array \([5, 3, 4,]\), return true if we can sum to the target.
+\begin{table}[h]
+	\centering
+	\begin{tabular}{| *{8}{|c|} |}
+  		\hline			
+  		T & F & F & F & F & F & F & F \\
+  		\hline  
+	\end{tabular}
+	\caption{Initialized array with seed values.}
+	\label{tab:can_sum}
+\end{table}
+\begin{python}
+def can_sum_tab(target: int, arr: List[int]) -> bool:
+  table = [False for i in range(target + 1)]
+  table[0] = True
+    
+  for i in range(target + 1):
+    if table[i] == True:
+      for val in arr:
+        if i + val <= target:
+          # add the val in array to current position and
+          # replace with true
+          table[i + val] = True
+                    
+    return table[target]
+\end{python}
+Why add current and array value? Let's walk through this example.
+\begin{enumerate}
+	\item Starting index \(0\): \(0 + 5\), \(0 + 3\), and \(0 + 4\)
+	\item Index \(3\): \(3 + 5 > 7\), \(3 + 3\), \(3 + 4\); True now at end
+	\item Index \(4\): \(4 + 5 > 7\), \(4 + 3\), \(4 + 4 > 7\)
+	\item Index \(5\): all greater than \(7\)
+\end{enumerate}
+By doing this, we obtain True at the target index if any sums add up to it. We do this in 
+\(\theta(m\cdot n)\) time with space \(\theta(m\) when \(m =\) the target value.
 \end{document}
 
 
