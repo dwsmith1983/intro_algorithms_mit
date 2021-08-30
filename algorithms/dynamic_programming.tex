@@ -287,20 +287,20 @@ order to select the array with the least elements. If there is more than one ans
 \begin{python}
 def best_sum(target, arr: List[int]) -> List[int]:
   if target == 0:
-      return []
+    return []
   if target < 0:
-      return None
+    return None
     
   shortest = None
     
   for i in arr:
-      remain = target - i
-      res = best_sum(remain, arr)
+    remain = target - i
+    res = best_sum(remain, arr)
         
-      if res is not None:
-          res.append(i)
-          if shortest is None or len(shortest) > len(res):
-              shortest = res
+    if res is not None:
+      res.append(i)
+      if shortest is None or len(shortest) > len(res):
+        shortest = res
                 
   return shortest
 \end{python}
@@ -315,27 +315,27 @@ def best_sum_memo(
     memo: Dict[int, List[int]]=None
     ) -> List[int]:
   if memo is None:
-      memo = {}
+    memo = {}
   if target in memo:
-      return memo[target]
+    return memo[target]
     
   if target == 0:
-      return []
+    return []
   if target < 0:
-      return None
+    return None
     
   shortest = None
     
   for i in arr:
-      remain = target - i
-      res = best_sum_memo(remain, arr, memo)
+    remain = target - i
+    res = best_sum_memo(remain, arr, memo)
         
-      if res is not None:
-          # copy the array due to python issues with immutability
-          new_arr = res.copy()
-          new_arr.append(i)
-          if shortest is None or len(shortest) > len(new_arr):
-              shortest = new_arr
+    if res is not None:
+      # copy the array due to python issues with immutability
+       new_arr = res.copy()
+       new_arr.append(i)
+       if shortest is None or len(shortest) > len(new_arr):
+         shortest = new_arr
                 
   memo[target] = shortest   
   return shortest
@@ -351,7 +351,151 @@ In the last three problems can\_sum, how\_sum, and best\_sum, we solved
 \end{enumerate}
 Next, we will look at dynamic program problems in the scope of string inputs.
 \par\medskip
-
+In this example, we will create the function can\_construct that takes as inputs a target string and an
+array of strings. We will return a boolean result if we can or cannot construct the target from the array.
+We may reuse the strings inside the array. Consider a target string of "abcdef" and an array of
+["ab", "abc", "cd", "def", "abcd"]. In these types of problems, we want to start from the beginning of the
+string parse left to right, breaking a string in the middle can cause unintended consequences. 
+\begin{figure}[h]
+	\centering
+	\includegraphics[height=2.5in]{can_construct_strings.pdf}
+	\caption{With strings, we are showing the remaining string after slicing the beginning of the string by
+	the array characters. That is, the left most node is after "ab".}
+	\label{fig:can_construct_strings}
+\end{figure}
+\begin{python}
+def can_construct(s: str, arr: List[str]) -> bool:
+  if s == "":
+    return True
+  
+  for chars in arr:
+    if s.startswith(chars):
+      new_s = s[len(chars):]
+      if can_construct(new_s, arr):
+        return True
+        
+  return False
+\end{python}
+In the worst case, the height of tree would be the length of the target and the number of nodes the size
+of the array. Let \(n\) be the height and \(m\) the number of nodes. Then our time complexity would be
+\(\theta(m^n)\). However, in our code, we will have to slice the string which means and this will take
+\(\theta(n)\) so our time complexity is actually \(\theta(m^n\cdot n)\). As for space, we have 
+\(\theta(m^2)\) where the additionally \(m\) comes from the new\_s memory.
+\par\medskip
+Next, let's memoize our can\_construct method.
+\begin{python}
+def can_construct_memo(
+    s: str, 
+    arr: List[str], 
+    memo: Dict[str, bool]=None
+    ) -> bool:
+  if memo is None:
+    memo = {}
+  if s in memo:
+    return memo[s]
+    
+  if s == "":
+    return True
+    
+  for chars in arr:
+    if s.startswith(chars):
+      new_s = s[len(chars):]
+      if can_construct_memo(new_s, arr, memo):
+        memo[s] = True
+        return True
+            
+  memo[s] = False
+  return False
+\end{python}
+For our memoized case, we have \(n\cdot m\) combinations and another \(n\) for string slicing so that
+leaves us with \(\theta(n^2\cdot m)\). The space will be the same as our brute force at \(\theta(n^2)\).
+\par\smallskip
+For the next few, I will simply state the problem statement, show the brute force, memoization, and 
+the time and space complexity but leave the explanation up to the readers to determine. Everything 
+needed to analyze the problems has been discussed previously so let's get started.
+\par\medskip
+Write a function that accepts a target string and an array of strings. In this case, we want to return the
+number of ways the target string can be constructed by the array of strings. Again, we can reuse 
+elements.
+\begin{python}
+def count_construct(s: str, arr: List[str]) -> int:
+  if s == "":
+    return 1
+    
+  cnt = 0
+  for chars in arr:
+    if s.startswith(chars):
+      new_s = s[len(chars):]
+      num = count_construct(new_s, arr)
+      cnt += num
+      
+  return cnt
+  
+  
+def count_construct_memo(
+    s: str, 
+    arr: List[str], 
+    memo: Dict[str, int]=None
+    ) -> int:
+  if memo is None:
+    memo = {}
+  if s in memo:
+    return memo[s]
+    
+  if s == "":
+    return 1
+    
+  cnt = 0
+  for chars in arr:
+    if s.startswith(chars):
+      new_s = s[len(chars):] 
+      num = count_construct_memo(new_s, arr, memo)
+      cnt += num
+    
+  memo[s] = cnt
+  return cnt
+\end{python}
+The time and space complexity for our brute force algorithm is \(\theta(m^n\cdot n)\) and \(\theta(n^2)\).
+As for the memoization, we have \(\theta(n^2\cdot m)\) and \(\theta(n^2)\).
+\par\medskip
+Write a function that takes a target string and an array of strings. We want to return all the ways we can
+construct the target string. We may use the strings in the array.
+\begin{python}
+def all_construct(s: str, arr: List[str]) -> List[List[str]]:
+  if s == "":
+    return [[]]
+    
+  result = []
+  for chars in arr:
+    if s.startswith(chars):
+        new_s = s[len(chars):]
+        result += [[chars] + i for i in all_construct(new_s, arr)]
+            
+  return result
+    
+    
+def all_construct_memo(
+    s: str, 
+    arr: List[str], 
+    memo: Dict[str, List[List[str]]]=None
+    ) -> List[List[str]]:
+  if memo is None:
+    memo = {}
+  if s in memo:
+    return memo[s]
+    
+  if s == "":
+    return [[]]
+    
+  result = []
+  for chars in arr:
+    if s.startswith(chars):
+      new_s = s[len(chars):]
+      result += [[chars] + i for i in all_construct_memo(new_s, arr)]
+    
+  memo[s] = result
+  return result
+\end{python}
 \end{document}
 
 
