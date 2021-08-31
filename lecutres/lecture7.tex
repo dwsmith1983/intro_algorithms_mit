@@ -1,3 +1,78 @@
 \chapter{Lecture: Counting Sort, Radix Sort, Lower Bounds for Sorting}
-\href{https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-006-introduction-to-algorithms-fall-2011/lecture-videos/lecture-7-counting-sort-radix-sort-lower-bounds-for-sorting/}{Lecture 6} 
+\href{https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-006-introduction-to-algorithms-fall-2011/lecture-videos/lecture-7-counting-sort-radix-sort-lower-bounds-for-sorting/}{Lecture 7} 
 from the MIT's  Intro to Algorithms.
+
+When is linear time sorting both possible and not possible? Let's start with the comparison model.
+\begin{enumerate}[label=$\ast$]
+	\item All input items are black boxes (ADTs)
+	\item Only operations allowed are comparisons \((<, \leq, >, \geq)\)
+	\item Time cost will just be the number of comparisons
+\end{enumerate}
+If we know that our algorithms are only comparing items, we can draw all the possible things it can do. 
+\begin{definition}
+	Decision tree: any comparison algorithm can be viewed as a tree of possible comparisons and their 
+	outcomes, and the resulting answer for any particular value of \(n\).
+\end{definition}
+\begin{table}[h]
+	\centering
+	\begin{tabular}{l | l}
+		Decision Tree & Algorithm \\
+		\hline
+		internal node & binary decision\\
+		leaf & found answer\\
+		root to leaf path & algorithm execution\\
+		length of path & running time of that execution\\
+		height of the tree & worst-case running time
+	\end{tabular}
+	\caption{Decision tree comparison to algorithm.}
+	\label{tab7:decision_algo}
+\end{table}
+What would be the lower bound for searching? \(n\) preprocessed items finding a given item among them in 
+the comparison model requires \(\Omega (\log_2 n)\) in the worst-case. At each step, we only have a no or a
+yes (binary), and the tree must have all possible answers so we have at least \(n\) leaves. for the decision 
+tree. Therefore, the height has to be at least \(\log_2 n\).
+
+What would be the lower bound for sorting? Again, we have the decision tree is binary but how many leaves
+does it have? The leaf will have the sorted order \(A[5] \leq A[7] \leq A[0] \leq\cdots\). We have that the 
+number of leaves is greater than or equal to the possible answers which would be \(n!\). The height is at least
+\begin{align*}
+	\log_2 n! & = \log_2\big[n\cdot (n - 1)\cdot (n - 2)\cdots 1\big]\\
+	 & = \log_2 n + \log_2 (n - 1) + \cdots + \log_2 2 + \log_2 1\\
+	 & \leq \log_2 n + \log_2 n + \cdots + \log_2 n\\
+	 & = n\cdot \log_2 n\\
+	 & = \Omega(n\cdot \log_2 n)
+\end{align*}
+Another way to show this is to note that \(n! \leq n^n\).
+
+Linear-time sorting (integer sorting).
+\begin{enumerate}[label=$\ast$]
+	\item Assume \(n\) keys sorting are non-negative integers in some range and each fits in a word.
+	\item Can do a lot more than comparisons.
+	\item For \(k = n^{O(1)}\) not too large, we can sort in linear time.
+\end{enumerate}
+Currently, the best algorithm to date performs in \(O\Big(n\sqrt{\log_2\log_2 n}\Big)\), not covered here. We 
+can achieve linear time with Counting Sort when \(k\) isn't too large. 
+\begin{python}
+# pseudocode
+L = array of k empty lists  # O(k)
+for j in range(n):
+  # key is an integer between 1 and k - 1
+  L[key(A[j])].append(A[j])  # O(1)
+  
+output = []
+for i in range(k):
+  output.extend(L[i])  # O(L[i])
+  
+# O(n + k)
+\end{python}
+Radix sort uses counting sort as a sub routine. 
+\begin{enumerate}[label=$\ast$]
+	\item Imagine each integer as base \(b\); number of digits \(d = \log_b k\).
+	\item Sort the integers by the least significant digit, the next least, ..., the most 
+	\item Sort by digit using counting sort; \(O(n + b)\)
+\end{enumerate}
+The total time would be \(O((n + b)\cdot d) = O((n + b)\cdot \log_b k)\). How do we minimize this? We need 
+\(b\) to be large but not bigger than \(n\). Therefore, we have \(O(n\cdot\log_n k)\). If \(k\leq n^c\), then
+\(O(n\cdot c)\). 
+
+
