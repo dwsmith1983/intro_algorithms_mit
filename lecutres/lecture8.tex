@@ -1,3 +1,55 @@
 \chapter{Lecture: Hashing with Chaining}
 \href{https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-006-introduction-to-algorithms-fall-2011/lecture-videos/lecture-8-hashing-with-chaining/}{Lecture 8} 
 from the MIT's  Intro to Algorithms.
+
+\begin{definition}
+	Dictionary is an abstract data type (ADT) which maintains a set of items each with a key. The following
+	operations are defined: insert item, delete item, and search for a key and return the item with a given key
+	or return a KeyError.
+\end{definition}
+\noindent
+With dictionaries, keys are unique so inserting an existing key will overwrite the current item value. All of the
+dictionary operations can be done in \(\theta(\log_2 n)\) time via an AVL tree. How can we search faster?
+We can get down to constant time with high probability.
+
+The simple approach to a dictionary is the direct-access table. We store items in an array which are indexed
+by key, integers. Why isn't this optimal?
+\begin{enumerate}
+	\item Keys may not be integers
+	\item Uses a lot of memory if we have a lot of keys
+\end{enumerate}
+What if our keys aren't integers? We can use prehashing. Prehashing maps keys to non-negative integers.
+In theory, keys are finite and discrete (string of bits). In Python, \(hash(x)\) is the prehash of \(x\). There are 
+some issues here though such as 
+\(hash("\textbackslash\varnothing B") = hash("\textbackslash\varnothing\textbackslash\varnothing C") = 64\).
+Ideally, \(hash(x) = hash(y)\) if and only if \(x = y\) but this isn't always true in Python. How do we reduce 
+space? Hashing. Reduce the universe of all possible keys down to a reasonable set of size \(m\) where 
+hashing function is define as
+\[
+	h:\mathfrak{U}\rightarrow \big\{0, 1, \ldots, m - 1\big\}.
+\]
+We would like \(m = \theta(n)\) where \(n\) is the number of keys in the dictionary. When 
+\(hash(k_i) = hash(k_j)\) but \(k_i \neq k_j\), we have a collision. We can deal with this through chaining. 
+We store is as a linked list of colliding elements. At the collision, we store a linked list with pointers to each 
+item pointing to the next. This is hashing with chaining. In the worst case, we have \(\theta(n)\).
+
+Assume we have simple uniform hashing (unrealistic) but convenient for analysis. Each key is equally likely
+to be hashed to any slot in the table independently of where other keys mapped. Under this assumption, we
+can analyze hashing with chaining. What is the expected length of a chain for \(n\) keys with \(m\) slots?
+The chance of a key going to a spot is \(n / m\). Let \(\alpha = n / m\) which is the load factor of the table.
+As long as \(m = \theta(n)\), this will be constant, \(\theta(1)\). In general, the running time is 
+\(\theta(1 + \alpha)\). 
+
+Hash functions
+\begin{enumerate}
+	\item Division method: \(h(k) = k \mod m\) if \(m\) is prime and not close to powers of \(2\) or \(10\), this
+	works pretty well.
+	\item Multiplication method: \(h(k) = \Big[(a\cdot k) \mod 2^w\Big] \gg (w - r)\) we are assuming we are in a 
+	\(w\) bit machine where we want the left most bit of the right most \(w\) bits, \(r\). Caveat, \(a\) should be
+	odd and not a power of \(2\).
+	\item Universal hashing: \(h(k) = \Big[(a\cdot k + b) \mod p\Big] \mod m\) where \(p\) is prime, \(a\) is 
+	random and \(k,b\in\{0,\ldots, p - 1\}\) such that \(p > \lvert\mathfrak{U}\rvert\).
+\end{enumerate}
+For worst case keys \(k_1\neq k_2\), the probability of \(h(k_1) = h_2(k_2)\) is \(1 / m\).
+
+

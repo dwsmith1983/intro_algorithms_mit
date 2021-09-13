@@ -98,7 +98,7 @@ def binary_recrusive(
 # iterative
 def binary_iterative(array: List[int], target: int) -> int:
   mid, start = 0, 0
-  end = len(array)
+  end = len(array) - 1
   
   while start <= end:
     mid = (start + end) // 2
