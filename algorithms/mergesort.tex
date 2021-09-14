@@ -53,7 +53,7 @@ def merge_sort(arr: List[int]) -> List[int]:
   if n == 1:
     return arr
     
-  mid = arr // 2
+  mid = n // 2
   
   left = merge_sort(arr[:mid])
   right = merge_sort(arr[mid:])

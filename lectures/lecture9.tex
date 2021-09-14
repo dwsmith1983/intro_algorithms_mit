@@ -1,0 +1,70 @@
+\chapter{Lecture: Table Doubling, Karp-Rabin}
+\href{https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-006-introduction-to-algorithms-fall-2011/lecture-videos/lecture-9-table-doubling-karp-rabin/}{Lecture 9} 
+from the MIT's  Intro to Algorithms.
+
+For today's lecture, recall the division method \(h(k) = k \mod m\). How to choose \(m\) such that 
+\(m = \theta(n)\) and \(\alpha = \theta(1)\). Let's pick \(m\) ideally small and power of \(2\)s. We will grow
+and shrink as necessary. Let \(m = 8\). If \(n > m\), grow the table. What do we mean by grow the table?
+\begin{enumerate}
+	\item Make the table of size \(m'\)
+	\item Build new hash \(h'\)
+	\item Rehash; for item in table, \(T\), \(T'\) insert item.
+\end{enumerate}
+How much bigger than \(m\) should \(m'\) be? \(m' = 2\cdot m\). What would be the cost of \(n\) insertions?
+The cost would be \(\theta(1 + 2 + 4 + 8 + \cdots + n\) which is a geometric series so \(\theta(n)\).
+\begin{definition}
+	Amortization operations take \(T(n)\) if \(k\) operations take \(\leq k\cdot T(n)\) time.
+\end{definition}
+\noindent
+In table doubling, the amortized running time is \(\theta(1)\) per insert since \(k\) insertions take \(\theta(k)\)
+time. Also, true for deletions. Suppose we do \(n\) inserts and \(n\) deletions. Our table would still be size 
+\(n\). How do we fix this? If \(m = n / 4\), then shrink to \(m / 2\). This wont work for \(n / 2\) since this would
+result in linear time operations. Python list operate on table doubling in order to be dynamic. Python list
+append and pop are constant amortized. However, popping the first item is linear time since all the items
+have to be shifted over.
+
+Let's move onto string matching.
+\begin{definition}
+	Given two strings \(s\) and \(t\). Does \(s\) occur as a substring of \(t\)?
+\end{definition}
+\noindent
+We could check the all the substrings of length \(s\) since there are \(n\) substrings for \(t\).
+\begin{python}
+any(s == t[i: i + len(s)] for i in range(len(t) - len(s))
+\end{python}
+If this returns true, then \(s\) occurs in \(t\). The time complexity of this would be 
+\(\theta\big(\lvert s\rvert \cdot (\lvert t\rvert - \lvert s\rvert)\big)\) and worst case would be 
+\(\theta(\lvert s\rvert\cdot\lvert t\rvert)\). However, this is slow. Can we do better? Yes, using hashing. The end
+goal is an algorithm that runs in \(\theta(\lvert s\rvert + \lvert t\rvert)\). We can use the Rolling Hash ADT.
+\(r\) maintains a string \(x\).
+\begin{enumerate}
+	\item \(r\).append(\(c\)) add char \(c\) to the end of \(x\)
+	\item \(r\).skip(\(c\)) delete the first char of \(x\) assuming it is \(c\)
+\end{enumerate}
+This is called the Karp-Rabin string matching algorithm.
+\begin{python}
+	# pseudo cdoe
+	rs = ""
+	for c in s:
+	  rs.append(c)  # rolling hash of s
+	  
+	for c in t[: len(s)]:
+	  rt.append(c)  # rolling hash of first s chars of t
+	  
+	if rs() == rt():
+	  for i in range(len(s), len(t)):
+	    rt.skip(t[i - len(s)])
+	    # r -> r - c * a^{|r| - 1}
+	    rt.append(t[i])
+	    # r -> r * a + ord(c) mod m
+	    if rs() == rt():
+	      if s == t[i - len(s) + 1: i + 1]:  # O(s) time
+	        # found match
+	      else:
+	        # happens with prob at most 1/s
+\end{python}
+If we can do this, then the expected time is constant \(\theta(1)\). Now, how do we build this data structure?
+This ADT will hold if we use the division method and \(m\) is chosen to be a random prime 
+\(\geq\lvert s\rvert\). Treat string \(x\) as a multi digit number in base \(s\) and the base \(a\) is the size of the 
+alphabet.
+
